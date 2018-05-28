@@ -42,7 +42,7 @@ export const features = {
     ['sample', '_arraySample'],
     ['sampleSize', '_arraySampleSize'],
     ['shuffle', '_arrayShuffle'],
-    ['some', '_arraySome'],
+    ['some', '_arraySome']
   ],
   'currying': [
     ['_createWrap', '_createPartial'],
@@ -79,10 +79,12 @@ export const features = {
   ],
   'guards': [
     ['_getNative', '_getValue'],
+    ['_getRawTag', '_objectToString'],
     ['_isIterateeCall', 'stubFalse'],
     ['_isPrototype', 'stubFalse'],
     ['_baseKeys', '_nativeKeys'],
     ['_baseKeysIn', '_nativeKeysIn'],
+    ['_castFunction', 'identity'],
     ['_castRest', 'identity'],
     ['_shortOut', 'identity'],
     ['isNaN', 'baseIsNaN'],
@@ -105,8 +107,9 @@ export const features = {
   ],
   'paths': [
     ['_baseGet', '_getValue'],
-    ['_castPath', 'identity'],
+    ['_castPath', 'castArray'],
     ['_isKey', 'identity'],
+    ['_parent', 'identity'],
     ['has', '_baseHas'],
     ['hasIn', '_baseHasIn'],
     ['property', '_baseProperty'],
@@ -128,10 +131,11 @@ export const features = {
     ['stringSize', '_asciiSize'],
     ['stringToArray', '_asciiToArray']
   ]
-};
+}
 
 export const overrides = {
   'ary': { 'currying': true },
+  'camelCase': { 'unicode': true },
   'clone': { 'cloning': true },
   'cloneDeep': { 'cloning': true },
   'cloneDeepWith': { 'cloning': true },
@@ -139,6 +143,10 @@ export const overrides = {
   'concat': { 'flattening': true },
   'curry': { 'currying': true },
   'curryRight': { 'currying': true },
+  'difference': { 'flattening': true },
+  'differenceBy': { 'flattening': true },
+  'differenceWith': { 'flattening': true },
+  'fill': { 'coercions': true },
   'flatMap': { 'flattening': true },
   'flatMapDeep': { 'flattening': true },
   'flatMapDepth': { 'flattening': true },
@@ -146,8 +154,23 @@ export const overrides = {
   'flattenDeep': { 'flattening': true },
   'flattenDepth': { 'flattening': true },
   'flip': { 'currying': true },
+  'isInteger': { 'coercions': true },
+  'kebabCase': { 'unicode': true },
+  'lowerCase': { 'unicode': true },
+  'parseInt': { 'coercions': true },
   'partialRight': { 'currying': true },
-  'rearg': { 'currying': true }
-};
+  'pick': { 'paths': true },
+  'rearg': { 'currying': true },
+  'snakeCase': { 'unicode': true },
+  'startCase': { 'unicode': true },
+  'union': { 'flattening': true },
+  'unionBy': { 'flattening': true },
+  'unionWith': { 'flattening': true },
+  'uniqueId': { 'coercions': true },
+  'upperCase': { 'unicode': true },
+  'xor': { 'flattening': true },
+  'xorBy': { 'flattening': true },
+  'xorWith': { 'flattening': true }
+}
 
-export default { features, overrides };
+export default { features, overrides }

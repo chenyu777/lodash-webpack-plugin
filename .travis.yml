@@ -1,13 +1,23 @@
 language: node_js
 sudo: false
 node_js:
-  - 4
+  - 7
   - 6
+  - 4
+
+env:
+  - WEBPACK_VERSION=2
+  - WEBPACK_VERSION=3
+  - WEBPACK_VERSION=4
+
+matrix:
+  exclude:
+  - node_js: 4
+    env: WEBPACK_VERSION=4
 
 cache:
   directories:
-    - $HOME/.npm
-    - $HOME/.yarn-cache
+    - ~/.npm
 
 git:
   depth: 10
@@ -17,15 +27,10 @@ branches:
     - master
 
 before_install:
-  # Use exact Node version.
   - nvm use $TRAVIS_NODE_VERSION
-
-  # Setup package managers.
-  - npm set loglevel error
-  - npm set progress false
-  - npm i -g yarn
-  - yarn -V
+  - npm i -g npm@^5
 
 install:
-  # Install packages.
-  - yarn
+  - npm i
+  - npm rm webpack
+  - npm install webpack@$WEBPACK_VERSION --ignore-scripts || true

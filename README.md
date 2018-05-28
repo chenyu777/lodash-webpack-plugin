@@ -1,4 +1,4 @@
-# lodash-webpack-plugin v0.10.2
+# lodash-webpack-plugin
 
 Create smaller Lodash builds by replacing [feature sets](#feature-sets) of modules
 with [noop](https://lodash.com/docs#noop), [identity](https://lodash.com/docs#identity),
@@ -11,7 +11,7 @@ by shrinking its cherry-picked builds even further!
 
 ```shell
 $ npm i --save lodash
-$ npm i --save-dev lodash-webpack-plugin babel-core babel-loader babel-plugin-lodash babel-preset-es2015 webpack
+$ npm i --save-dev lodash-webpack-plugin babel-core babel-loader babel-plugin-lodash babel-preset-env webpack
 ```
 
 ## Example
@@ -27,19 +27,18 @@ var webpack = require('webpack');
 
 module.exports = {
   'module': {
-    'loaders': [{
-      'loader': 'babel',
+    'rules': [{
+      'use': 'babel-loader',
       'test': /\.js$/,
       'exclude': /node_modules/,
-      'query': {
+      'options': {
         'plugins': ['lodash'],
-        'presets': ['es2015']
+        'presets': [['env', { 'modules': false, 'targets': { 'node': 4 } }]]
       }
     }]
   },
   'plugins': [
     new LodashModuleReplacementPlugin,
-    new webpack.optimize.OccurrenceOrderPlugin,
     new webpack.optimize.UglifyJsPlugin
   ]
 };
@@ -71,7 +70,7 @@ The following features are removed by default _(biggest savings first)_:
 | `unicode`      | Support Unicode symbols. |
 | `chaining`     | Components to support chain sequences. |
 | `memoizing`    | Support `_.memoize` & memoization. |
-| `coercions`    | Coercion methods like `_.toInteger`, `_.toNumber`, & `_.toString`. |
+| `coercions`    | Support for coercing values to integers, numbers, & strings. |
 | `flattening`   | Support “flatten” methods & flattening rest arguments. |
 | `paths`        | Deep property path support for methods like `_.get`, `_.has`, & `_.set`. |
 | `placeholders` | Argument placeholder support for “bind”, “curry”, & “partial” methods.<br>_(requires `currying`)_ |

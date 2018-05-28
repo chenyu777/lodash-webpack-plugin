@@ -1,5 +1,6 @@
 import path from 'path';
 import webpack from 'webpack';
+import UglifyJSPlugin from 'uglifyjs-webpack-plugin';
 
 const rootPath = path.resolve(__dirname, '..');
 
@@ -11,28 +12,25 @@ export const output = {
 };
 
 export const module = {
-  'loaders': [{
-    'loader': 'babel',
+  'rules': [{
+    'loader': 'babel-loader',
     'test': /\.js$/,
     'exclude': /node_modules/,
-    'query': {
+    'options': {
       'plugins': ['lodash']
     }
   }]
 };
 
 export const resolve = {
-  'extensions': ['', '.js'],
-  'modulesDirectories': [],
-  'root': [
+  'modules': [
     path.join(rootPath, 'node_modules'),
     path.join(rootPath, 'test/fixtures')
   ]
 };
 
 export const plugins = [
-  new webpack.optimize.OccurrenceOrderPlugin,
-  new webpack.optimize.UglifyJsPlugin
+  new UglifyJSPlugin
 ];
 
 export default {

@@ -6,9 +6,9 @@ import glob from 'glob';
 import { sync as gzipSize } from 'gzip-size';
 import MemoryFS from 'memory-fs';
 import path from 'path';
+import pify from 'pify';
 import Plugin from '../src/index';
 import prettyBytes from 'pretty-bytes';
-import { promisify } from 'bluebird';
 import webpack from 'webpack';
 
 const memFS = new MemoryFS;
@@ -28,7 +28,7 @@ class Compiler {
   constructor(config={}) {
     this.compiler = webpack(config);
     this.compiler.outputFileSystem = memFS;
-    this.compiler.run = promisify(this.compiler.run, { 'context': this.compiler });
+    this.compiler.run = pify(this.compiler.run.bind(this.compiler));
   }
 
   run() {
@@ -95,6 +95,24 @@ describe('reduced modular builds', function() {
 
   /*--------------------------------------------------------------------------*/
 
+  _.each(glob.sync(path.join(__dirname, 'case-fixtures/*/')), testPath => {
+    const testName = getTestName(testPath);
+    const actualPath = path.join(testPath, 'actual.js');
+    const config = new Config(actualPath);
+    const plugin = config.plugins[0];
+
+    it(`should enable unicode for explicit \`${ testName }\` use`, done => {
+      new Compiler(config).run()
+        .then(() => {
+          assert.ok(!_.some(plugin.matches, pair => _.endsWith(pair[0], '_unicodeWords.js')));
+          done();
+        })
+        .catch(done);
+    });
+  });
+
+  /*--------------------------------------------------------------------------*/
+
   _.each(glob.sync(path.join(__dirname, 'clone-fixtures/*/')), testPath => {
     const testName = getTestName(testPath);
     const actualPath = path.join(testPath, 'actual.js');
@@ -105,6 +123,24 @@ describe('reduced modular builds', function() {
       new Compiler(config).run()
         .then(() => {
           assert.ok(!_.some(plugin.matches, pair => _.endsWith(pair[0], '_baseClone.js')));
+          done();
+        })
+        .catch(done);
+    });
+  });
+
+  /*--------------------------------------------------------------------------*/
+
+  _.each(glob.sync(path.join(__dirname, 'coercions-fixtures/*/')), testPath => {
+    const testName = getTestName(testPath);
+    const actualPath = path.join(testPath, 'actual.js');
+    const config = new Config(actualPath);
+    const plugin = config.plugins[0];
+
+    it(`should enable coercions for explicit \`${ testName }\` use`, done => {
+      new Compiler(config).run()
+        .then(() => {
+          assert.ok(!_.some(plugin.matches, pair => /to(?:Number|String)\.js$/.test(pair[0])));
           done();
         })
         .catch(done);
@@ -131,6 +167,24 @@ describe('reduced modular builds', function() {
 
   /*--------------------------------------------------------------------------*/
 
+  _.each(glob.sync(path.join(__dirname, 'flattening-fixtures/*/')), testPath => {
+    const testName = getTestName(testPath);
+    const actualPath = path.join(testPath, 'actual.js');
+    const config = new Config(actualPath);
+    const plugin = config.plugins[0];
+
+    it(`should enable flattening for explicit \`${ testName }\` use`, done => {
+      new Compiler(config).run()
+        .then(() => {
+          assert.ok(!_.some(plugin.matches, pair => _.endsWith(pair[0], '_baseFlatten.js')));
+          done();
+        })
+        .catch(done);
+    });
+  });
+
+  /*--------------------------------------------------------------------------*/
+
   _.each(glob.sync(path.join(__dirname, 'non-fixtures/*/')), testPath => {
     const testName = getTestName(testPath);
     const rePath = RegExp('/' + testName + '(?:/|\\.js$)');
@@ -142,6 +196,24 @@ describe('reduced modular builds', function() {
       new Compiler(config).run()
         .then(() => {
           assert.ok(!_.some(plugin.matches, pair => rePath.test(pair[0])));
+          done();
+        })
+        .catch(done);
+    });
+  });
+
+  /*--------------------------------------------------------------------------*/
+
+  _.each(glob.sync(path.join(__dirname, 'path-fixtures/*/')), testPath => {
+    const testName = getTestName(testPath);
+    const actualPath = path.join(testPath, 'actual.js');
+    const config = new Config(actualPath);
+    const plugin = config.plugins[0];
+
+    it(`should enable paths for explicit \`${ testName }\` use`, done => {
+      new Compiler(config).run()
+        .then(() => {
+          assert.ok(!_.some(plugin.matches, pair => _.endsWith(pair[0], '_castPath.js')));
           done();
         })
         .catch(done);

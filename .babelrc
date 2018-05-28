@@ -1,8 +1,9 @@
 {
   "plugins": [
-    "add-module-exports"
+    "add-module-exports",
+    "lodash"
   ],
   "presets": [
-    "es2015"
+    ["@babel/env", { "targets": { "node": 4 } }]
   ]
 }
